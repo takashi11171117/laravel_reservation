@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="reservation" default="build">
+
+    <property name="outputDir" value="./result" override="false" />
+    <property name="appdir" value="." />
+
+    <!-- 初期設定 -->
+    <target name="prepare">
+        <echo msg="コード静的解析開始...." />
+        <!--<mkdir dir="./build" />-->
+    </target>
+
+    <!-- コーディングスタイルを合わせる(psr-2など) -->
+    <target name="php-cs-fixer">
+        <exec command="vendor/bin/php-cs-fixer fix . -vv" output="${outputDir}/php-cs-fixer.log" />
+    </target>
+
+    <!-- コードの品質を検査 -->
+    <target name="phpmd">
+        <exec dir="${appdir}" executable="vendor/bin/phpmd" output="${outputDir}/phpmd.log">
+            <arg line="${appdir}" />
+            <arg line="xml" />
+            <arg line="phpmd.xml" />
+            <arg line="--reportfile ${outputDir}/phpmd.xml" />
+            <arg line="--suffixes php" />
+            <arg line="--exclude node_modules,resources,storage,vendor,app/Console,tests" />
+        </exec>
+    </target>
+
+    <!-- コミット予定ファイルからsyntaxError検出 -->
+    <target name="syntaxCheck">
+        <exec command="php syntaxCheck" output="${outputDir}/syntaxCheck.log" />
+    </target>
+
+    <!-- ユニットテスト実行 -->
+    <target name="phpunit">
+        <exec command="vendor/bin/phpunit" logoutput="true" />
+    </target>
+
+    <target name="phpcpd">
+      <exec dir="${appdir}" executable="vendor/bin/phpcpd" output="${outputDir}/phpcpd.log">
+        <arg line="--log-pmd ${outputDir}/phpcpd.xml" />
+        <arg line="--names *.php" />
+        <arg line="${appdir}" />
+        <arg line="--exclude node_modules,resources,storage,vendor,app/Console,tests" />
+      </exec>
+    </target>
+
+    <target name="build" depends="prepare, php-cs-fixer, phpmd, syntaxCheck, phpunit, phpcpd" /><!-- 実行順序指定 -->
+</project>

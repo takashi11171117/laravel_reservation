@@ -1,0 +1,22 @@
+{
+  "extends": ["airbnb/base"],
+  "plugins": ["riot", "html"],
+  "settings": {
+    "html/html-extensions": [".html"]
+  },
+  "rules" : {
+    "no-alert": 0,
+    "semi": [2, "never"],
+    "indent": ["error", 4],
+    "import/no-extraneous-dependencies": 0,
+    "no-return-assign": 0,
+  },
+  "globals": {
+    "riot": true,
+    "opts": true,
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+  }
+}
